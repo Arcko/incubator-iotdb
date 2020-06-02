@@ -79,6 +79,7 @@ import org.apache.iotdb.db.metadata.mnode.InternalMNode;
 import org.apache.iotdb.db.metadata.mnode.LeafMNode;
 import org.apache.iotdb.db.metadata.mnode.MNode;
 import org.apache.iotdb.db.metadata.mnode.StorageGroupMNode;
+import org.apache.iotdb.db.qp.constant.SQLConstant;
 import org.apache.iotdb.db.qp.logical.Operator.OperatorType;
 import org.apache.iotdb.db.qp.logical.sys.AuthorOperator;
 import org.apache.iotdb.db.qp.logical.sys.AuthorOperator.AuthorType;
@@ -126,6 +127,7 @@ import org.apache.iotdb.db.utils.TypeInferenceUtils;
 import org.apache.iotdb.db.utils.UpgradeUtils;
 import org.apache.iotdb.service.rpc.thrift.TSStatus;
 import org.apache.iotdb.tsfile.common.conf.TSFileDescriptor;
+import org.apache.iotdb.tsfile.common.constant.TsFileConstant;
 import org.apache.iotdb.tsfile.exception.filter.QueryFilterOptimizationException;
 import org.apache.iotdb.tsfile.exception.write.UnSupportedDataTypeException;
 import org.apache.iotdb.tsfile.file.metadata.ChunkGroupMetadata;
@@ -885,8 +887,12 @@ public class PlanExecutor implements IPlanExecutor {
                 .getPredictedDataType(insertPlan.getValues()[i], insertPlan.isInferType());
             Path path = new Path(deviceId, measurement);
             internalCreateTimeseries(path.toString(), dataType);
+            logger.warn("created non-exist path {}", path.toString());
           }
           LeafMNode measurementNode = (LeafMNode) node.getChild(measurement);
+          if (measurementNode == null) {
+            logger.warn("LeafMNode {} does not exist of device {}", measurement, deviceId);
+          }
           schemas[i] = measurementNode.getSchema();
           // reset measurement to common name instead of alias
           measurementList[i] = measurementNode.getName();
