@@ -204,6 +204,7 @@ public class InsertPlan extends PhysicalPlan {
       failedMeasurements = new ArrayList<>();
     }
     failedMeasurements.add(measurements[index]);
+    logger.warn("mark index {} of measurement {} as null", index, measurements[index]);
     schemas[index] = null;
     measurements[index] = null;
     types[index] = null;

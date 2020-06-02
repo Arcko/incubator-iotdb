@@ -873,6 +873,7 @@ public class PlanExecutor implements IPlanExecutor {
     try {
       String[] measurementList = insertPlan.getMeasurements();
       String deviceId = insertPlan.getDeviceId();
+      logger.warn("start to insert device {} and measurements {}", deviceId, Arrays.asList(measurementList));
       node = mManager.getDeviceNodeWithAutoCreateAndReadLock(deviceId);
       MeasurementSchema[] schemas = new MeasurementSchema[measurementList.length];
 
@@ -887,7 +888,7 @@ public class PlanExecutor implements IPlanExecutor {
                 .getPredictedDataType(insertPlan.getValues()[i], insertPlan.isInferType());
             Path path = new Path(deviceId, measurement);
             internalCreateTimeseries(path.toString(), dataType);
-            logger.warn("created non-exist path {}", path.toString());
+            logger.warn("created non-exist path {}, value {}, datatype {}", path.toString(), dataType);
           }
           LeafMNode measurementNode = (LeafMNode) node.getChild(measurement);
           if (measurementNode == null) {
@@ -981,12 +982,12 @@ public class PlanExecutor implements IPlanExecutor {
           TSFileDescriptor.getInstance().getConfig().getCompressor(),
           Collections.emptyMap());
     } catch (PathAlreadyExistException e) {
-      if (logger.isDebugEnabled()) {
-        logger.debug(
+//      if (logger.isDebugEnabled()) {
+        logger.warn(
             "Ignore PathAlreadyExistException when Concurrent inserting"
                 + " a non-exist time series {}",
             path);
-      }
+//      }
     }
   }
 
