@@ -59,9 +59,13 @@ import org.apache.iotdb.tsfile.file.metadata.enums.TSEncoding;
 import org.apache.iotdb.tsfile.read.common.Path;
 import org.apache.iotdb.tsfile.utils.Pair;
 import org.apache.iotdb.tsfile.write.schema.MeasurementSchema;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** The hierarchical struct of the Metadata Tree is implemented in this class. */
 public class MTree implements Serializable {
+
+  private static final Logger logger = LoggerFactory.getLogger(MTree.class);
 
   private static final long serialVersionUID = -4200394435237291964L;
   private MNode root;
@@ -115,10 +119,13 @@ public class MTree implements Serializable {
       cur = cur.getChild(nodeName);
     }
     if (cur instanceof LeafMNode) {
+      logger.warn("ready to throw PathAlreadyExistException {}", cur.getFullPath());
       throw new PathAlreadyExistException(cur.getFullPath());
     }
     String leafName = nodeNames[nodeNames.length - 1];
     if (cur.hasChild(leafName)) {
+      logger.warn("ready to throw PathAlreadyExistException, cur node {} has child {}", cur.getFullPath(), leafName);
+      logger.warn("cur node {} has children {}", cur.getFullPath(), cur.getChildren().keySet());
       throw new PathAlreadyExistException(path);
     }
     if (alias != null && cur.hasChild(alias)) {

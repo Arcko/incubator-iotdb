@@ -893,6 +893,7 @@ public class PlanExecutor implements IPlanExecutor {
           LeafMNode measurementNode = (LeafMNode) node.getChild(measurement);
           if (measurementNode == null) {
             logger.warn("LeafMNode {} does not exist of device {}", measurement, deviceId);
+            logger.warn("DeviceNode {} has children {}", deviceId, node.getChildren().keySet());
           }
           schemas[i] = measurementNode.getSchema();
           // reset measurement to common name instead of alias
@@ -985,8 +986,8 @@ public class PlanExecutor implements IPlanExecutor {
 //      if (logger.isDebugEnabled()) {
         logger.warn(
             "Ignore PathAlreadyExistException when Concurrent inserting"
-                + " a non-exist time series {}",
-            path);
+                + " a non-exist time series {}, exception message {}",
+            path, e.getMessage());
 //      }
     }
   }
