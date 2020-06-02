@@ -873,7 +873,7 @@ public class PlanExecutor implements IPlanExecutor {
     try {
       String[] measurementList = insertPlan.getMeasurements();
       String deviceId = insertPlan.getDeviceId();
-      logger.warn("start to insert device {} and measurements {}", deviceId, Arrays.asList(measurementList));
+//      logger.warn("start to insert device {} and measurements {}", deviceId, Arrays.asList(measurementList));
       node = mManager.getDeviceNodeWithAutoCreateAndReadLock(deviceId);
       MeasurementSchema[] schemas = new MeasurementSchema[measurementList.length];
 
@@ -888,7 +888,7 @@ public class PlanExecutor implements IPlanExecutor {
                 .getPredictedDataType(insertPlan.getValues()[i], insertPlan.isInferType());
             Path path = new Path(deviceId, measurement);
             internalCreateTimeseries(path.toString(), dataType);
-            logger.warn("created non-exist path {}, value {}, datatype {}", path.toString(), dataType);
+            logger.warn("created non-exist path {}, datatype {}", path.toString(), dataType);
           }
           LeafMNode measurementNode = (LeafMNode) node.getChild(measurement);
           if (measurementNode == null) {
